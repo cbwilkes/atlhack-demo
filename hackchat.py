@@ -30,41 +30,13 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 # [END imports]
 
 
-# [START database]
-class ChatPost(ndb.Model):
-    author = ndb.StringProperty()
-    content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
-# [END database]
-
-
-# [START main_page]
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        messages_query = ChatPost.query().order(-ChatPost.date)
-        messages = messages_query.fetch(10)
-        template_values = {
-            'messages': messages,
-        }
+        template_values = {}
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
-# [END main_page]
 
 
-# [START upload]
-class Upload(webapp2.RequestHandler):
-    def post(self):
-        message = ChatPost()
-        message.author = self.request.get('author')
-        message.content = self.request.get('content')
-        message.put()
-        self.redirect('/')
-# [END upload]
-
-
-# [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/new', Upload),
 ], debug=True)
-# [END app]
