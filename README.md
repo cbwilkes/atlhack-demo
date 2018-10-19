@@ -1,25 +1,12 @@
-# Guestbook
+# HackChat
 
-Guestbook is an example application showing basic usage of Google App
-Engine. Users can read & write text messages and optionally log-in with
-their Google account. Messages are stored in App Engine (NoSQL)
-High Replication Datastore (HRD) and retrieved using a strongly consistent
-(ancestor) query.
+HackChat is an example application showing basic usage of Google [AppEngine][1]
+in [Python][2]. Users can write, save, and view simple text-based messages.
 
-## Products
-- [App Engine][1]
-
-## Language
-- [Python][2]
-
-## APIs
-- [NDB Datastore API][3]
-- [Users API][4]
-
-## Dependencies
-- [webapp2][5]
-- [jinja2][6]
-- [Twitter Bootstrap][7]
+Messages are stored in AppEngine's datastore via the [`ndb`][3] library.
+Possible extensions include using the [`user`][4] library to authenticate
+users, using [jinja2][6] and [Bootstrap][7] to make it pretty, or anything else
+you can think of.
 
 [1]: https://developers.google.com/appengine
 [2]: https://python.org
@@ -28,25 +15,3 @@ High Replication Datastore (HRD) and retrieved using a strongly consistent
 [5]: http://webapp-improved.appspot.com/
 [6]: http://jinja.pocoo.org/docs/
 [7]: http://twitter.github.com/bootstrap/
-
-
-## E2E Test for this sample app
-
-A Makefile is provided to deploy and run the e2e test.
-
-To run:
-
-     export GAE_PROJECT=your-project-id
-     make
-
-To manually run, install the requirements
-
-    pip install -r e2e/requirements-dev.txt
-
-Set the environment variable to point to your deployed app:
-
-    export GUESTBOOK_URL="http://guestbook-test-dot-useful-temple-118922.appspot.com/"
-
-Finally, run the test
-
-    python e2e/test_e2e.py
