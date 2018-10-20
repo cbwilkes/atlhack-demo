@@ -27,16 +27,48 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
+JINJA_ENVIRONMENT.globals.update({
+        # Set global variables.
+        'uri_for': webapp2.uri_for,
+        # ...
+    })
 # [END imports]
 
+class ChatPost(ndb.Model):
+    author = ndb.StringProperty()
+    content = ndb.StringProperty()
+    timestamp = ndb.DateTimeProperty(auto_now_add=True)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        template_values = {}
+
+        messages_query = ChatPost.query().order(-ChatPost.timestamp)
+        messages = messages_query.fetch(10)
+        template_values = {
+            'messages': messages,
+        }
+
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
+class HomePage(webapp2.RequestHandler):
+    def get(self):
+        template_values = {}
+        template = JINJA_ENVIRONMENT.get_template('home.html')
+        self.response.write(template.render(template_values))
+
+class Upload(webapp2.RequestHandler):
+    def post(self):
+        message = ChatPost()
+        message.author = self.request.get('author')
+        message.content = self.request.get('content')
+        message.put()
+        self.redirect(webapp2.uri_for('chat'))
+
+
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage),
-], debug=True)
+    webapp2.Route('/', HomePage, name='home'),
+    webapp2.Route('/chat', MainPage, name='chat'),
+    webapp2.Route('/new', Upload, name='chat_upload'),
+    ], debug=True)
