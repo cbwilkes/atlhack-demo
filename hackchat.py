@@ -34,7 +34,7 @@ JINJA_ENVIRONMENT.globals.update({
     })
 # [END imports]
 
-class ChatPost(ndb.Model):
+class Message(ndb.Model):
     author = ndb.StringProperty()
     content = ndb.StringProperty()
     timestamp = ndb.DateTimeProperty(auto_now_add=True)
@@ -42,12 +42,11 @@ class ChatPost(ndb.Model):
 class MainPage(webapp2.RequestHandler):
     def get(self):
 
-        messages_query = ChatPost.query().order(-ChatPost.timestamp)
+        messages_query = Message.query().order(-Message.timestamp)
         messages = messages_query.fetch(10)
         template_values = {
             'messages': messages,
         }
-
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 
@@ -59,7 +58,7 @@ class HomePage(webapp2.RequestHandler):
 
 class Upload(webapp2.RequestHandler):
     def post(self):
-        message = ChatPost()
+        message = Message()
         message.author = self.request.get('author')
         message.content = self.request.get('content')
         message.put()
