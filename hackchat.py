@@ -27,11 +27,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
-JINJA_ENVIRONMENT.globals.update({
-        # Set global variables.
-        'uri_for': webapp2.uri_for,
-        # ...
-    })
 # [END imports]
 
 class Message(ndb.Model):
@@ -62,7 +57,7 @@ class Upload(webapp2.RequestHandler):
         message.author = self.request.get('author')
         message.content = self.request.get('content')
         message.put()
-        self.redirect(webapp2.uri_for('chat'))
+        self.redirect('/')
 
 class ExamplePage(webapp2.RequestHandler):
     def get(self):
@@ -71,8 +66,8 @@ class ExamplePage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 app = webapp2.WSGIApplication([
-    webapp2.Route('/', HomePage, name='home'),
-    webapp2.Route('/chat', MainPage, name='chat'),
+    webapp2.Route('/home', HomePage, name='home'),
+    webapp2.Route('/', MainPage, name='chat'),
     webapp2.Route('/new', Upload, name='chat_upload'),
     webapp2.Route('/example', ExamplePage, name='example'),
     ], debug=True)
